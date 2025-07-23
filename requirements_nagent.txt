@@ -1,0 +1,6 @@
+# nAgentモード用依存関係
+schedule==1.2.0
+asyncio
+threading
+pathlib
+json 
