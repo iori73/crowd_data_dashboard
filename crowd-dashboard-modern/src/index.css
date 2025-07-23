@@ -1,0 +1,23 @@
+/* 
+ * Reset default styles - keeping only essential reset
+ * Original styles are loaded from style.css and enhanced.css
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Override any conflicting Tailwind/shadcn styles */
+.header,
+.main,
+.footer,
+.container,
+.control-button,
+.chart-card,
+.stats-card,
+.insight-card,
+.help-section {
+  all: revert;
+}
