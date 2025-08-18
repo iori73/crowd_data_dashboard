@@ -1,7 +1,8 @@
 import { TimeRadialChart } from '@/components/charts/TimeRadialChart';
 import { WeeklyBarChart } from '@/components/charts/WeeklyBarChart';
 import { Legend } from '@/components/ui/Legend';
-import { InsightCard, InsightIcons } from '@/components/ui/InsightCard';
+import { InsightCard } from '@/components/ui/InsightCard';
+import { InsightIcons } from '@/components/ui/InsightIcons';
 import type { CrowdData } from '@/lib/dataLoader';
 import '@/styles/spacing.css';
 import '@/styles/typography.css';
@@ -18,19 +19,18 @@ export function DataInsights({ data }: DataInsightsProps) {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Header Text Container */}
           <div className="flex flex-col">
-            <h2 className="text-headline-large text-optimized font-bold tracking-tight">データインサイト</h2>
+            <h2 className="text-2xl text-optimized font-bold tracking-tight">データインサイト</h2>
             <p className="text-body-medium text-optimized text-gray-600">適用中の表示期間からわかる分析結果</p>
           </div>
         </div>
       </section>
 
-      <div className="flex flex-col gap-6 lg:gap-5">
+      <div className="flex flex-col gap-4">
         {/* Charts Container - 時間帯 */}
         <div className="flex flex-col xl:flex-row gap-4 w-full">
           {/* Chart Card - 時間帯 */}
           <div
-            className="flex flex-col rounded-lg p-4 pt-6 lg:p-8 shadow-sm w-full xl:flex-shrink-0 xl:self-start xl:w-auto"
-            style={{ backgroundColor: '#f0f1f4' }}
+            className="flex flex-col rounded-lg p-4 pt-6 lg:p-8 shadow-sm w-full xl:flex-shrink-0 xl:self-start xl:w-auto bg-gray-200"
           >
             <div className="flex justify-center">
               <div className="w-[220px] h-[180px] sm:w-[240px] sm:h-[200px] lg:w-[265px] lg:h-[232px]">
@@ -40,7 +40,7 @@ export function DataInsights({ data }: DataInsightsProps) {
           </div>
 
           {/* Text Section - 時間帯の説明 */}
-          <div className="flex flex-col gap-3 lg:gap-2">
+          <div className="flex flex-col gap-2 lg:gap-3">
             {/* Header with icon and title */}
             <div className="flex items-center gap-2" style={{ alignItems: 'baseline' }}>
               <div className="bg-gray-100 rounded-full p-1.5 w-7 h-7 flex items-center justify-center">
@@ -49,7 +49,7 @@ export function DataInsights({ data }: DataInsightsProps) {
                   <path d="M8 4V8L11 11" stroke="#09090B" strokeWidth="1.33" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3 className="text-title-large text-optimized font-medium text-gray-600">時間帯</h3>
+              <h3 className="text-xl text-optimized font-medium text-gray-600">時間帯</h3>
             </div>
 
             {/* Legend Container */}
@@ -91,8 +91,7 @@ export function DataInsights({ data }: DataInsightsProps) {
         <div className="flex flex-col xl:flex-row gap-4 w-full">
           {/* Chart Card - 曜日 */}
           <div
-            className="flex flex-col rounded-lg p-4 lg:p-8 shadow-sm w-full xl:flex-shrink-0 xl:self-start xl:w-auto"
-            style={{ backgroundColor: '#f0f1f4' }}
+            className="flex flex-col rounded-lg p-4 lg:p-8 shadow-sm w-full xl:flex-shrink-0 xl:self-start xl:w-auto bg-gray-200"
           >
             <div className="flex justify-center">
               <div className="w-[220px] h-[180px] sm:w-[240px] sm:h-[200px] lg:w-[265px] lg:h-[232px]">
@@ -102,7 +101,7 @@ export function DataInsights({ data }: DataInsightsProps) {
           </div>
 
           {/* Text Section - 曜日の説明 */}
-          <div className="flex flex-col gap-3 lg:gap-2">
+          <div className="flex flex-col gap-2 lg:gap-3">
             {/* Header with icon and title */}
             <div className="flex items-center gap-2" style={{ alignItems: 'baseline' }}>
               <div className="bg-gray-100 rounded-full p-1.5 w-7 h-7 flex items-center justify-center">
@@ -116,7 +115,7 @@ export function DataInsights({ data }: DataInsightsProps) {
                   />
                 </svg>
               </div>
-              <h3 className="text-title-large text-optimized font-medium text-gray-600">曜日</h3>
+              <h3 className="text-xl text-optimized font-medium text-gray-600">曜日</h3>
             </div>
 
             {/* Legend Container */}

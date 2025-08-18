@@ -41,13 +41,11 @@ export function WeeklyBarChart({ data, className = '' }: WeeklyBarChartProps) {
     }));
   }, [data]);
 
-  const maxHeight = 100;
-  const minHeight = 40;
 
   return (
     <div className={`w-full h-full flex justify-center items-center ${className}`}>
       <div className="flex items-end justify-center space-x-4 h-[120px]">
-        {weeklyData.map((dayData, index) => {
+        {weeklyData.map((dayData) => {
           // 実際のデータに基づいてバーの高さを計算
           const maxHeight = 98; // 最大高さ
           const minHeight = 58; // 最小高さ

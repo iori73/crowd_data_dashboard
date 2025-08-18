@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { RotateCcw, FileDown, FileText, Filter, X, ChevronDown } from 'lucide-react';
+import { ExportUtils } from '@/lib/exportUtils';
 import type { FilterState } from '@/types/filter';
 
 interface HeaderProps {
@@ -104,7 +105,7 @@ export function Header({
   const handleApplyFilter = () => {
     if (localFilter.period === 'custom') {
       if (!localFilter.startDate || !localFilter.endDate) {
-        alert('開始日と終了日を指定してください');
+        ExportUtils.showToast('開始日と終了日を指定してください', 'warning');
         return;
       }
 
@@ -112,7 +113,7 @@ export function Header({
       const end = new Date(localFilter.endDate);
 
       if (start > end) {
-        alert('開始日は終了日より前である必要があります');
+        ExportUtils.showToast('開始日は終了日より前である必要があります', 'warning');
         return;
       }
     }
@@ -144,23 +145,28 @@ export function Header({
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-3">
             <Button
               variant="outline"
-              size="sm"
+              size="default"
               onClick={onRefresh}
               disabled={isLoading}
-              className="h-8 px-3 text-label-small text-optimized"
+              aria-label={isLoading ? "データを更新中" : "データを更新"}
+              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              <RotateCcw className={`mr-2 h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+              {isLoading ? (
+                <div className="mr-2 w-3.5 h-3.5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              ) : (
+                <RotateCcw className="mr-2 h-3.5 w-3.5" />
+              )}
               更新
             </Button>
 
             <Button
               variant="outline"
-              size="sm"
+              size="default"
               onClick={onExportJSON}
-              className="h-8 px-3 text-label-small text-optimized"
+              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <FileText className="mr-2 h-3.5 w-3.5" />
               JSON
@@ -168,9 +174,9 @@ export function Header({
 
             <Button
               variant="outline"
-              size="sm"
+              size="default"
               onClick={onExportCSV}
-              className="h-8 px-3 text-label-small text-optimized"
+              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <FileDown className="mr-2 h-3.5 w-3.5" />
               CSV
@@ -250,7 +256,11 @@ export function Header({
               localFilter.period !== currentFilter.period ||
               localFilter.startDate !== currentFilter.startDate ||
               localFilter.endDate !== currentFilter.endDate) && (
-              <Button size="sm" onClick={handleApplyFilter} className="h-8 px-3 text-label-small text-optimized">
+              <Button 
+                size="default" 
+                onClick={handleApplyFilter} 
+                className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
                 <Filter className="mr-2 h-3.5 w-3.5" />
                 適用
               </Button>

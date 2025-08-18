@@ -1,5 +1,5 @@
 // import { figma } from '@figma/code-connect';
-import { Header } from './Header';
+// import { Header } from './Header';
 
 // figma.connect(
 //   Header,

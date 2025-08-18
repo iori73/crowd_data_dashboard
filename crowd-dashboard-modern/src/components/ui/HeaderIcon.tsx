@@ -1,4 +1,3 @@
-import * as React from 'react';
 
 interface HeaderIconProps {
   size?: 'sm' | 'md' | 'lg';
