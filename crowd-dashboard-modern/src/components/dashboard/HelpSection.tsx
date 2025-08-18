@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '../ui/card';
 import { HelpCircle, BarChart3, Mouse, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
 
 export function HelpSection() {

@@ -1,4 +1,4 @@
-import '@/styles/typography.css';
+import '../../styles/typography.css';
 
 interface LegendItem {
   color: string;

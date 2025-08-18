@@ -1,9 +1,9 @@
 import { Bar } from 'react-chartjs-2';
-import { ChartConfig } from '@/lib/chartConfig';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { ChartConfig } from '../../lib/chartConfig';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { BarChart3, Database, AlertTriangle } from 'lucide-react';
-import type { WeeklyStats } from '@/lib/dataProcessor';
+import type { WeeklyStats } from '../../lib/dataProcessor';
 
 interface ChartCardProps {
   weeklyStats: WeeklyStats;

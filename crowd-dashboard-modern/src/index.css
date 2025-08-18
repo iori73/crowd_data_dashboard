@@ -1,10 +1,10 @@
+/* レスポンシブタイポグラフィシステム */
+@import './styles/typography.css';
+@import './styles/spacing.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* レスポンシブタイポグラフィシステム */
-@import '@/styles/typography.css';
-@import '@/styles/spacing.css';
 
 @layer base {
   :root {

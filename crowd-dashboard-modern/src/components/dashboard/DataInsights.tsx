@@ -1,11 +1,11 @@
-import { TimeRadialChart } from '@/components/charts/TimeRadialChart';
-import { WeeklyBarChart } from '@/components/charts/WeeklyBarChart';
-import { Legend } from '@/components/ui/Legend';
-import { InsightCard } from '@/components/ui/InsightCard';
-import { InsightIcons } from '@/components/ui/InsightIcons';
-import type { CrowdData } from '@/lib/dataLoader';
-import '@/styles/spacing.css';
-import '@/styles/typography.css';
+import { TimeRadialChart } from '../charts/TimeRadialChart';
+import { WeeklyBarChart } from '../charts/WeeklyBarChart';
+import { Legend } from '../ui/Legend';
+import { InsightCard } from '../ui/InsightCard';
+import { InsightIcons } from '../ui/InsightIcons';
+import type { CrowdData } from '../../lib/dataLoader';
+import '../../styles/spacing.css';
+import '../../styles/typography.css';
 
 interface DataInsightsProps {
   data: CrowdData[];

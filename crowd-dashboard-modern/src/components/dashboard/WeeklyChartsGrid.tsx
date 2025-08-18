@@ -1,5 +1,5 @@
-import { ChartCard } from '@/components/charts/ChartCard';
-import type { WeeklyStats } from '@/lib/dataProcessor';
+import { ChartCard } from '../charts/ChartCard';
+import type { WeeklyStats } from '../../lib/dataProcessor';
 
 interface WeeklyChartsGridProps {
   weeklyStats: WeeklyStats[];

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { CrowdData } from '@/lib/dataLoader';
+import type { CrowdData } from '../../lib/dataLoader';
 
 interface WeeklyBarChartProps {
   data: CrowdData[];

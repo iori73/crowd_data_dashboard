@@ -1,6 +1,6 @@
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../ui/card';
 import { BarChart3, PieChart, Clock, Star } from 'lucide-react';
-import type { OverallStats } from '@/lib/dataProcessor';
+import type { OverallStats } from '../../lib/dataProcessor';
 
 interface StatisticsSummaryProps {
   stats: OverallStats;

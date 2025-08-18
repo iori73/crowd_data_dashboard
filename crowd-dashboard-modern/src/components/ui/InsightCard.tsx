@@ -1,5 +1,5 @@
 import React from 'react';
-import '@/styles/typography.css';
+import '../../styles/typography.css';
 
 interface InsightItem {
   title: string;
