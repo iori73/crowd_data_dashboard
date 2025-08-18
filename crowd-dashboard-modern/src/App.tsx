@@ -9,11 +9,11 @@ import { Footer } from './components/dashboard/Footer';
 import { DataLoader } from './lib/dataLoader';
 import { DataProcessor } from './lib/dataProcessor';
 import { ExportUtils } from './lib/exportUtils';
-import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/toaster';
+import { Button } from './components/ui/button';
+import { Toaster } from './components/ui/toaster';
 import type { CrowdData } from './lib/dataLoader';
 import type { WeeklyStats, OverallStats } from './lib/dataProcessor';
-import type { FilterState } from '@/types/filter';
+import type { FilterState } from './types/filter';
 
 function App() {
   const [data, setData] = useState<CrowdData[]>([]);
