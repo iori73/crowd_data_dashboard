@@ -5,11 +5,6 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
   build: {
     outDir: 'dist',
     sourcemap: false,
@@ -20,6 +15,12 @@ export default defineConfig({
           ui: ['lucide-react', '@radix-ui/react-slot', '@radix-ui/react-toast']
         }
       }
-    }
-  }
+    },
+    chunkSizeWarningLimit: 1000
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 })
