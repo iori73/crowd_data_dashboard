@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.gym.analysis.weekly</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/i_kawano/.pyenv/versions/3.11.6/bin/python3</string>
+        <string>/Users/i_kawano/Documents/training_waitnum_analysis/src/automation/weekly_ocr_pipeline.py</string>
+        <string>--weekly</string>
+    </array>
+    
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>0</integer>    <!-- 0 = Sunday -->
+        <key>Hour</key>
+        <integer>0</integer>    <!-- 00:01 -->
+        <key>Minute</key>
+        <integer>1</integer>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/i_kawano/Documents/training_waitnum_analysis/logs/ocr_pipeline_output.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/i_kawano/Documents/training_waitnum_analysis/logs/ocr_pipeline_error.log</string>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/i_kawano/Documents/training_waitnum_analysis</string>
+    
+    <key>RunAtLoad</key>
+    <false/>
+    
+    <key>KeepAlive</key>
+    <false/>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/i_kawano/.pyenv/shims:/Users/i_kawano/.pyenv/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYENV_ROOT</key>
+        <string>/Users/i_kawano/.pyenv</string>
+    </dict>
+    
+</dict>
+</plist>

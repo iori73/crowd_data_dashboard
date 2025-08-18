@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV Viewer</h1>
+        <div id="table-container"></div>
+    </div>
+
+    <script>
+        fetch('fit_place24_data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').filter(row => row.trim() !== '');
+                const headers = rows[0].split(',');
+                
+                let table = '<table>';
+                
+                // ヘッダー行
+                table += '<thead><tr>';
+                headers.forEach(header => {
+                    table += `<th>${header.trim()}</th>`;
+                });
+                table += '</tr></thead>';
+                
+                // データ行
+                table += '<tbody>';
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].split(',');
+                    table += '<tr>';
+                    cells.forEach(cell => {
+                        table += `<td>${cell.trim()}</td>`;
+                    });
+                    table += '</tr>';
+                }
+                table += '</tbody></table>';
+                
+                document.getElementById('table-container').innerHTML = table;
+            })
+            .catch(error => {
+                document.getElementById('table-container').innerHTML = 
+                    '<p style="color: red;">エラー: CSVファイルを読み込めませんでした。</p>';
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>

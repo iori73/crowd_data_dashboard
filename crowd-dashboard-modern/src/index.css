@@ -1,23 +1,159 @@
-/* 
- * Reset default styles - keeping only essential reset
- * Original styles are loaded from style.css and enhanced.css
- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* レスポンシブタイポグラフィシステム */
+@import '@/styles/typography.css';
+@import '@/styles/spacing.css';
+
+@layer base {
+  :root {
+    --background: oklch(0.985 0 0);
+    --foreground: oklch(0.141 0.005 285.823);
+    --card: oklch(0.985 0 0);
+    --card-foreground: oklch(0.141 0.005 285.823);
+    --popover: oklch(0.985 0 0);
+    --popover-foreground: oklch(0.141 0.005 285.823);
+    --primary: oklch(0.21 0.006 285.885);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.967 0.001 286.375);
+    --secondary-foreground: oklch(0.21 0.006 285.885);
+    --muted: oklch(0.967 0.001 286.375);
+    --muted-foreground: oklch(0.484 0.004 285.758);
+    --accent: oklch(0.967 0.001 286.375);
+    --accent-foreground: oklch(0.21 0.006 285.885);
+    --destructive: oklch(0.697 0.199 23.825);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.906 0.003 286.259);
+    --input: oklch(0.906 0.003 286.259);
+    --ring: oklch(0.21 0.006 285.885);
+    --radius: 0.5rem;
+    --chart-1: oklch(0.627 0.159 23.064);
+    --chart-2: oklch(0.472 0.114 173.719);
+    --chart-3: oklch(0.282 0.065 197.137);
+    --chart-4: oklch(0.703 0.168 73.064);
+    --chart-5: oklch(0.684 0.196 27.33);
+  }
+
+  .dark {
+    --background: oklch(0.256 0.006 286.033);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.256 0.006 286.033);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.256 0.006 286.033);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.92 0.004 286.32);
+    --primary-foreground: oklch(0.21 0.006 285.885);
+    --secondary: oklch(0.37 0.013 285.805);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.37 0.013 285.805);
+    --muted-foreground: oklch(0.653 0.01 285.982);
+    --accent: oklch(0.37 0.013 285.805);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.518 0.162 23.825);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.37 0.013 285.805);
+    --input: oklch(0.37 0.013 285.805);
+    --ring: oklch(0.82 0.011 286.027);
+    --chart-1: oklch(0.531 0.147 222.064);
+    --chart-2: oklch(0.503 0.12 160.719);
+    --chart-3: oklch(0.595 0.158 30.137);
+    --chart-4: oklch(0.652 0.134 280.064);
+    --chart-5: oklch(0.724 0.147 340.33);
+  }
 }
 
-/* Override any conflicting Tailwind/shadcn styles */
-.header,
-.main,
-.footer,
-.container,
-.control-button,
-.chart-card,
-.stats-card,
-.insight-card,
-.help-section {
-  all: revert;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+@layer utilities {
+  /* Improved focus visibility for accessibility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Better touch targets for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Improved contrast for readability */
+  .text-contrast {
+    @apply text-gray-700;
+  }
+
+  /* Smooth hamburger menu animations */
+  .hamburger-line {
+    @apply absolute block w-6 h-0.5 bg-foreground transition-all duration-300 ease-in-out;
+  }
+
+  .hamburger-line:nth-child(1) {
+    transform: translateY(-8px);
+  }
+
+  .hamburger-line:nth-child(2) {
+    transform: translateY(0px);
+  }
+
+  .hamburger-line:nth-child(3) {
+    transform: translateY(8px);
+  }
+
+  .hamburger-open .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translateY(0px);
+  }
+
+  .hamburger-open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger-open .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translateY(0px);
+  }
+
+  /* Smooth menu overlay animation */
+  .menu-overlay {
+    @apply fixed inset-0 z-40;
+    background: linear-gradient(rgb(255, 255, 255) 33%, rgba(255, 255, 255, 0.5) 100%);
+    backdrop-filter: blur(16px);
+    transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s ease;
+  }
+
+  .dark .menu-overlay {
+    background: linear-gradient(rgb(9, 9, 11) 33%, rgba(9, 9, 11, 0.5) 100%);
+  }
+
+  .menu-overlay.menu-enter {
+    opacity: 0;
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+
+  .menu-overlay.menu-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .menu-content {
+    @apply transform;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .menu-content.menu-enter {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .menu-content.menu-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

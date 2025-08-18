@@ -1,0 +1,8 @@
+{
+  "codeConnect": {
+    "include": ["src/**/*.tsx", "src/**/*.jsx"],
+    "exclude": ["**/*.test.*", "**/*.spec.*"],
+    "parser": "react"
+  },
+  "figmaUrl": "https://www.figma.com/design/JZgMqfnRACv3R611NwZ6JV/Data-Insight-Main-Components"
+}

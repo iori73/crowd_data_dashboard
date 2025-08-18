@@ -1,0 +1,148 @@
+/* レスポンシブタイポグラフィシステム - ベストプラクティスに基づく */
+
+/* 
+ベースフォントサイズの設定
+- モバイル: 14px
+- タブレット: 15px  
+- デスクトップ: 16px
+*/
+
+html {
+  font-size: 14px; /* モバイルベース */
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 15px; /* タブレット */
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px; /* デスクトップ */
+  }
+}
+
+/* タイポグラフィスケール（Material Design + Apple HIG準拠） */
+
+/* 見出しサイズ */
+.text-display-large {
+  font-size: clamp(2rem, 4vw, 3rem); /* 28px → 48px */
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.text-display-medium {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem); /* 24.5px → 40px */
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.text-display-small {
+  font-size: clamp(1.5rem, 3vw, 2rem); /* 21px → 32px */
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+/* ヘッドライン */
+.text-headline-large {
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem); /* 19.25px → 28px */
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.text-headline-medium {
+  font-size: clamp(1.25rem, 2vw, 1.5rem); /* 17.5px → 24px */
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.text-headline-small {
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem); /* 15.75px → 22px */
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* タイトル */
+.text-title-large {
+  font-size: clamp(1.25rem, 1.4vw, 1.5rem); /* 20px → 24px */
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.text-title-medium {
+  font-size: clamp(1.125rem, 1.2vw, 1.375rem); /* 18px → 22px */
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.text-title-small {
+  font-size: clamp(1rem, 1vw, 1.25rem); /* 16px → 20px */
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* ボディテキスト */
+.text-body-large {
+  font-size: clamp(1rem, 0.8vw, 1.125rem); /* 16px → 18px */
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.text-body-medium {
+  font-size: clamp(0.875rem, 0.7vw, 1rem); /* 14px → 16px */
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ラベル */
+.text-label-large {
+  font-size: clamp(1.125rem, 1vw, 1.25rem); /* 18px → 20px */
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.text-label-medium {
+  font-size: clamp(1rem, 0.9vw, 1.125rem); /* 16px → 18px */
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.text-label-small {
+  font-size: clamp(0.875rem, 0.8vw, 1rem); /* 14px → 16px */
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+/* 可読性向上のプロパティ */
+.text-optimized {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* デバイス別の最適化 */
+@media (hover: hover) and (pointer: fine) {
+  /* デスクトップでのホバー対応テキスト */
+  .text-interactive:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* 高DPI画面での最適化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .text-optimized {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* アクセシビリティ対応 */
+@media (prefers-reduced-motion: no-preference) {
+  .text-animated {
+    transition: font-size 0.2s ease, line-height 0.2s ease;
+  }
+}

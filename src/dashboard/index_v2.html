@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crowd Data Dashboard v2.0</title>
+    <meta name="description" content="フィットネス施設の混雑状況を時間別・曜日別に分析するダッシュボード" />
+    <meta name="author" content="Dashboard Team" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/enhanced.css" />
+    
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo-section">
+            <div class="logo-icon">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Dashboard Icon"
+              >
+                <rect
+                  x="4"
+                  y="4"
+                  width="20"
+                  height="20"
+                  rx="4"
+                  fill="#3B82F6"
+                />
+                <rect x="8" y="8" width="4" height="12" rx="2" fill="white" />
+                <rect x="16" y="10" width="4" height="10" rx="2" fill="white" />
+              </svg>
+            </div>
+            <h1 class="logo-text">Crowd Data Dashboard</h1>
+            <span class="version-badge">v2.0</span>
+          </div>
+          <div class="analytics-section">
+            <div class="analytics-icon">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Analytics Icon"
+              >
+                <path
+                  d="M2 16L6 10L10 14L16 4"
+                  stroke="#6B7280"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 4H16V8"
+                  stroke="#6B7280"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <span class="analytics-text">時間別分析</span>
+          </div>
+          
+          <!-- Control Panel -->
+          <div class="control-panel">
+            <!-- Period Filter -->
+            <div class="filter-group">
+              <label for="period-filter" class="filter-label">表示期間:</label>
+              <select 
+                id="period-filter" 
+                class="period-select"
+                title="データの表示期間を選択"
+                aria-label="データの表示期間を選択"
+              >
+                <option value="all" selected>全期間（累積平均）</option>
+                <option value="week">直近1週間</option>
+                <option value="twoWeeks">直近2週間</option>
+                <option value="month">直近1ヶ月</option>
+                <option value="custom">カスタム期間</option>
+              </select>
+            </div>
+
+            <!-- Custom Date Range (initially hidden) -->
+            <div id="custom-date-range" class="custom-date-range" style="display: none;">
+              <input 
+                type="date" 
+                id="start-date" 
+                class="date-input"
+                title="開始日"
+                aria-label="開始日"
+              />
+              <span class="date-separator">〜</span>
+              <input 
+                type="date" 
+                id="end-date" 
+                class="date-input"
+                title="終了日"
+                aria-label="終了日"
+              />
+            </div>
+
+            <!-- Apply Filter Button -->
+            <button 
+              id="apply-filter" 
+              class="control-button" 
+              title="フィルターを適用"
+              aria-label="フィルターを適用"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+              </svg>
+              適用
+            </button>
+
+            <button 
+              class="control-button" 
+              data-action="refresh" 
+              title="データを更新 (Ctrl+R)"
+              aria-label="データを更新"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+              </svg>
+              更新
+            </button>
+            
+            <div class="export-group">
+              <button 
+                class="control-button" 
+                data-action="export-json"
+                title="JSONでエクスポート (Ctrl+S)"
+                aria-label="JSONでエクスポート"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 14H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v7.793L4.854 6.646a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l3.5-3.5a.5.5 0 0 0-.708-.708L8.5 9.293V1.5z"/>
+                </svg>
+                JSON
+              </button>
+              
+              <button 
+                class="control-button" 
+                data-action="export-csv"
+                title="CSVでエクスポート"
+                aria-label="CSVでエクスポート"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5h11zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2h-11zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                CSV
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h2 class="page-title">曜日別・時間別 混雑状況分析</h2>
+          <p class="page-subtitle">
+            フィットネス施設の混雑パターンを可視化し、最適な利用時間を特定できます。
+            データは時間別の平均人数として表示されます。
+          </p>
+          
+          <!-- Filter Status Display -->
+          <div class="filter-status" id="filter-status">
+            <!-- Filter status will be populated by JavaScript -->
+          </div>
+
+          <!-- Statistics Summary -->
+          <div class="page-statistics">
+            <!-- Statistics will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Sunday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">日曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Sunday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="sundayChart" aria-label="日曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">月曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Monday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="mondayChart" aria-label="月曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tuesday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">火曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Tuesday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="tuesdayChart" aria-label="火曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wednesday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">水曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Wednesday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="wednesdayChart" aria-label="水曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thursday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">木曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Thursday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="thursdayChart" aria-label="木曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Friday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">金曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Friday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="fridayChart" aria-label="金曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saturday -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">土曜日</h3>
+              <div class="chart-meta">
+                <span class="data-indicator" data-weekday="Saturday">
+                  <span class="indicator-dot"></span>
+                  <span class="indicator-text">データ確認中...</span>
+                </span>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="saturdayChart" aria-label="土曜日の時間別混雑状況グラフ"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color"></div>
+                <span class="legend-text">平均人数</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Insights Section -->
+        <section class="insights-section">
+          <h3 class="insights-title">データインサイト</h3>
+          <div class="insights-grid" id="insights-container">
+            <!-- Insights will be populated by JavaScript -->
+          </div>
+        </section>
+
+        <!-- Help Section -->
+        <section class="help-section">
+          <details class="help-details">
+            <summary class="help-summary">
+              <span class="help-icon">❓</span>
+              使い方・操作方法
+            </summary>
+            <div class="help-content">
+              <div class="help-grid">
+                <div class="help-item">
+                  <h4>📊 グラフの見方</h4>
+                  <ul>
+                    <li>縦軸: 平均人数（その時間帯の混雑度）</li>
+                    <li>横軸: 時間（0:00-23:00の24時間表示）</li>
+                    <li>バーの高さが高いほど混雑している時間帯</li>
+                    <li>グレーのバーはデータが不足している時間帯</li>
+                  </ul>
+                </div>
+                <div class="help-item">
+                  <h4>🖱️ 操作方法</h4>
+                  <ul>
+                    <li>グラフにマウスを合わせると詳細情報が表示</li>
+                    <li>「更新」ボタンでデータを最新に更新</li>
+                    <li>「JSON/CSV」ボタンでデータをダウンロード</li>
+                    <li>キーボードショートカット: Ctrl+R (更新), Ctrl+S (JSON保存)</li>
+                  </ul>
+                </div>
+                <div class="help-item">
+                  <h4>💡 活用のヒント</h4>
+                  <ul>
+                    <li>混雑の少ない時間帯を狙って快適に利用</li>
+                    <li>曜日別の傾向を把握してスケジュール調整</li>
+                    <li>データの平均値は過去の実績に基づいています</li>
+                    <li>リアルタイム状況は現地で確認してください</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </details>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-info">
+            <p class="footer-text">
+              © 2025 Crowd Data Visualizer v2.0. 
+              <span class="tech-stack">React + Chart.js + ES6 Modules</span>
+            </p>
+          </div>
+          <div class="footer-links">
+            <a href="#" class="footer-link" aria-label="技術情報">技術情報</a>
+            <a href="#" class="footer-link" aria-label="データソース">データソース</a>
+            <a href="#" class="footer-link" aria-label="フィードバック">フィードバック</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Scripts (ES6 Modules) -->
+    <script type="module" src="js/dashboard.js"></script>
+
+    <!-- Fallback for browsers without module support -->
+    <script nomodule>
+      document.body.innerHTML = `
+        <div style="padding: 2rem; text-align: center; font-family: sans-serif;">
+          <h2>🚫 ブラウザ対応エラー</h2>
+          <p>このダッシュボードはES6 Modulesに対応したモダンブラウザが必要です。</p>
+          <p>Chrome 61+, Firefox 60+, Safari 10.1+, Edge 16+ をお使いください。</p>
+        </div>
+      `;
+    </script>
+  </body>
+</html>
