@@ -42,10 +42,10 @@ export function TimeRadialChart({ data, className = '' }: TimeRadialChartProps) 
     }));
   }, [data]);
 
-  // SVG設定（Figmaサイズに合わせる）- 僅かに大きく調整
-  const center = 125;
-  const baseRadius = 34;
-  const maxRadius = 82;
+  // SVG設定（コンパクトなサイズに調整）
+  const center = 175;
+  const baseRadius = 50;
+  const maxRadius = 120;
 
   // 時間ラベルの生成（Figmaに合わせて8つ）
   const timeLabels = [
@@ -83,7 +83,7 @@ export function TimeRadialChart({ data, className = '' }: TimeRadialChartProps) 
     // 色の決定ロジック
     let strokeColor;
     if (hourData.average < 10) {
-      strokeColor = '#FFFFFF'; // 10人未満は白
+      strokeColor = 'rgb(229, 231, 235)'; // 10人未満はグレー200
     } else if (peakHours.includes(hour)) {
       strokeColor = 'rgb(255, 94, 94)'; // 最も多い時間帯は赤
     } else {
@@ -109,12 +109,12 @@ export function TimeRadialChart({ data, className = '' }: TimeRadialChartProps) 
 
   return (
     <div className={`w-full h-full flex flex-col items-center justify-center ${className}`}>
-      <svg width="100%" height="100%" viewBox="0 0 250 250" className="overflow-visible">
+      <svg width="100%" height="100%" viewBox="0 0 350 350" className="overflow-visible">
         {/* ベース円 */}
-        <circle cx={125} cy={125} r={34} fill="none" stroke="rgba(163, 163, 163, 0.5)" strokeWidth="2" />
+        {/* <circle cx={125} cy={125} r={34} fill="none" stroke="rgba(163, 163, 163, 0.5)" strokeWidth="2" /> */}
 
         {/* 最大範囲円 */}
-        <circle cx={125} cy={125} r={82} fill="none" stroke="rgba(163, 163, 163, 0.3)" strokeWidth="2" />
+        <circle cx={175} cy={175} r={120} fill="none" stroke="rgba(163, 163, 163, 0.3)" strokeWidth="2" />
 
         {/* 放射状の線 */}
         {radialLines.map((line) => (
@@ -135,9 +135,9 @@ export function TimeRadialChart({ data, className = '' }: TimeRadialChartProps) 
         {timeLabels.map(({ hour, label, iconPath }) => {
           const angle = hour * 15 - 90;
           const angleRad = (angle * Math.PI) / 180;
-          const labelRadius = 108;
-          const x = 125 + labelRadius * Math.cos(angleRad);
-          const y = 125 + labelRadius * Math.sin(angleRad);
+          const labelRadius = 145;
+          const x = 175 + labelRadius * Math.cos(angleRad);
+          const y = 175 + labelRadius * Math.sin(angleRad);
 
           // 12:00の場合は位置を10px下に調整
           const yOffset = hour === 12 ? 10 : 0;
@@ -161,8 +161,6 @@ export function TimeRadialChart({ data, className = '' }: TimeRadialChartProps) 
           );
         })}
 
-        {/* 中央のドット */}
-        <circle cx={125} cy={125} r="6" fill="#6B7280" />
       </svg>
     </div>
   );

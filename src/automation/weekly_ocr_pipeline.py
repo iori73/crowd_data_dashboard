@@ -380,6 +380,62 @@ class GymImageOCRPipeline:
         except Exception as e:
             self.logger.error(f"分析エラー: {e}")
 
+    def update_readme_stats(self, total_count: int, latest_date: str):
+        """README.mdの統計情報を自動更新"""
+        try:
+            readme_path = self.project_dir / "README.md"
+            
+            if not readme_path.exists():
+                self.logger.warning(f"README.mdが見つかりません: {readme_path}")
+                return False
+            
+            # READMEの内容を読み込み
+            with open(readme_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 現在の日時
+            current_date = dt.datetime.now().strftime("%Y年%m月%d日")
+            
+            # データ期間の計算
+            if latest_date != "データなし":
+                # CSVファイルから最初のデータ日付を取得
+                try:
+                    existing_data, _ = self.read_existing_csv_data()
+                    if existing_data:
+                        earliest_date = min(item['datetime'] for item in existing_data).split(' ')[0]
+                        data_period = f"{earliest_date}〜{latest_date}"
+                    else:
+                        data_period = latest_date
+                except:
+                    data_period = latest_date
+            else:
+                data_period = "データなし"
+            
+            # 統計セクションの更新
+            stats_pattern = r'### \*\*📊 データ統計\*\*.*?(?=###|\Z)'
+            new_stats = f"""### **📊 データ統計**
+- **総データ数**: {total_count}件の混雑記録（CSVヘッダー除く、{total_count + 1}行）
+- **データ期間**: {data_period}
+- **最新更新**: {latest_date}
+- **データ範囲**: 朝4時〜夜23時台の混雑状況"""
+            
+            content = re.sub(stats_pattern, new_stats, content, flags=re.DOTALL)
+            
+            # 最終更新日の更新
+            update_pattern = r'\*\*最終更新\*\*: \d{4} 年 \d{1,2} 月 \d{1,2} 日'
+            content = re.sub(update_pattern, f"**最終更新**: {current_date}", content)
+            
+            # ファイルに書き込み
+            with open(readme_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            self.logger.info(f"✅ README.md統計情報を更新: {total_count}件, {latest_date}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"README更新処理エラー: {e}")
+            return False
+
     def run_weekly_ocr_pipeline(self):
         """週次画像OCR処理パイプライン（メイン処理）"""
         self.logger.info("🚀 週次画像OCR処理を開始します...")
@@ -456,6 +512,16 @@ class GymImageOCRPipeline:
             # 6. データ分析
             self.logger.info("📊 データ分析を実行中...")
             self.analyze_data()
+            
+            # 7. README統計更新
+            self.logger.info("📝 README.md統計情報を更新中...")
+            try:
+                latest_date = max(item['datetime'] for item in unique_data) if unique_data else "データなし"
+                if latest_date != "データなし":
+                    latest_date = latest_date.split(' ')[0]  # 日付部分のみ取得
+                self.update_readme_stats(total_count, latest_date)
+            except Exception as e:
+                self.logger.error(f"README更新エラー: {e}")
             
             self.logger.info("🎉 週次画像OCR処理が完了しました！")
             return True

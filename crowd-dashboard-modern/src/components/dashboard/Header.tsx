@@ -9,8 +9,11 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { RotateCcw, FileDown, FileText, Filter, X, ChevronDown } from 'lucide-react';
+import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 import { ExportUtils } from '../../lib/exportUtils';
 import type { FilterState } from '../../types/filter';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { Language } from '../../lib/translations';
 
 interface HeaderProps {
   onRefresh: () => void;
@@ -19,6 +22,8 @@ interface HeaderProps {
   onFilterChange: (filter: FilterState) => void;
   isLoading?: boolean;
   currentFilter?: FilterState;
+  currentLanguage?: Language;
+  onLanguageChange?: (language: Language) => void;
 }
 
 export function Header({
@@ -28,17 +33,24 @@ export function Header({
   onFilterChange,
   isLoading = false,
   currentFilter = { period: 'all', startDate: null, endDate: null },
+  currentLanguage = 'en',
+  onLanguageChange,
 }: HeaderProps) {
   const [localFilter, setLocalFilter] = useState<FilterState>(currentFilter);
   const [showCustomDateRange, setShowCustomDateRange] = useState(currentFilter.period === 'custom');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useTranslation(currentLanguage);
+
+  const handleLanguageChange = (language: Language) => {
+    onLanguageChange?.(language);
+  };
 
   const periodOptions = [
-    { value: 'all', label: '全期間（累積平均）' },
-    { value: 'week', label: '直近1週間' },
-    { value: 'twoWeeks', label: '直近2週間' },
-    { value: 'month', label: '直近1ヶ月' },
-    { value: 'custom', label: 'カスタム期間' },
+    { value: 'all', label: t('allPeriods') },
+    { value: 'week', label: t('lastWeek') },
+    { value: 'twoWeeks', label: t('lastTwoWeeks') },
+    { value: 'month', label: t('lastMonth') },
+    { value: 'custom', label: t('customPeriod') },
   ];
 
   const handleKeyboardShortcuts = useCallback(
@@ -121,16 +133,6 @@ export function Header({
     onFilterChange(localFilter);
   };
 
-  const getPeriodLabel = () => {
-    const labels = {
-      all: '全期間（累積平均）',
-      week: '直近1週間',
-      twoWeeks: '直近2週間',
-      month: '直近1ヶ月',
-      custom: 'カスタム期間',
-    };
-    return labels[currentFilter.period];
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -140,54 +142,64 @@ export function Header({
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <HeaderIcon size="md" />
-              <span className="font-bold text-sm sm:text-base">Crowd Data Dashboard</span>
+              <span className="font-bold text-xl sm:text-2xl">{t('appTitle')}</span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-3">
+          <nav className="hidden md:flex items-center gap-2">
             <Button
               variant="outline"
               size="default"
               onClick={onRefresh}
               disabled={isLoading}
               aria-label={isLoading ? "データを更新中" : "データを更新"}
-              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+              className="min-h-[44px] px-4 text-base font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
               {isLoading ? (
-                <div className="mr-2 w-3.5 h-3.5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                <div className="w-3.5 h-3.5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
               ) : (
-                <RotateCcw className="mr-2 h-3.5 w-3.5" />
+                <RotateCcw className=" h-3.5 w-3.5" />
               )}
-              更新
+              {t('refresh')}
             </Button>
 
-            <Button
-              variant="outline"
-              size="default"
-              onClick={onExportJSON}
-              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              <FileText className="mr-2 h-3.5 w-3.5" />
-              JSON
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="default"
+                  className="min-h-[44px] px-4 text-base font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  <FileDown className="mr-2 h-3.5 w-3.5" />
+                  {t('download')}
+                  <ChevronDown className="ml-2 h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-white">
+                <DropdownMenuItem onClick={onExportJSON}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  {t('exportJSON')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onExportCSV}>
+                  <FileDown className="mr-2 h-4 w-4" />
+                  {t('exportCSV')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            <Button
-              variant="outline"
-              size="default"
-              onClick={onExportCSV}
-              className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              <FileDown className="mr-2 h-3.5 w-3.5" />
-              CSV
-            </Button>
+            {/* Language Switcher */}
+            <LanguageSwitcher 
+              value={currentLanguage}
+              onValueChange={(lang) => handleLanguageChange(lang as Language)}
+            />
           </nav>
 
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`relative w-8 h-8 flex items-center justify-center transition-all duration-300 bg-gray-100 rounded-full ${
+              className={`relative w-8 h-8 flex items-center justify-center transition-all duration-300 rounded-full ${
                 isMobileMenuOpen ? 'hamburger-open' : ''
               }`}
               aria-label="メニュー"
@@ -204,20 +216,19 @@ export function Header({
         <div className="flex flex-col space-y-4 md:flex-row md:items-end md:justify-between md:space-y-0">
           <div className="flex flex-col space-y-2 md:flex-row md:items-center md:space-x-4 md:space-y-0">
             {/* Period Filter */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-3">
               <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium whitespace-nowrap">表示期間:</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="justify-between whitespace-nowrap rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    className="justify-between whitespace-nowrap rounded-md border border-input bg-white px-3 py-2 text-base ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     {periodOptions.find((option) => option.value === localFilter.period)?.label}
-                    <ChevronDown className="ml-2 h-4 w-4" />
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuContent align="start" className="w-48 bg-white">
                   {periodOptions.map((option) => (
                     <DropdownMenuItem
                       key={option.value}
@@ -262,7 +273,7 @@ export function Header({
                 className="min-h-[44px] px-4 text-sm font-medium transition-all duration-200 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 <Filter className="mr-2 h-3.5 w-3.5" />
-                適用
+                {t('apply')}
               </Button>
             )}
           </div>
@@ -270,8 +281,8 @@ export function Header({
           {/* Filter Status */}
           {currentFilter.period !== 'all' && (
             <div className="flex items-center space-x-2">
-              <Badge variant="outline" className="px-2 py-1 text-label-small text-optimized">
-                フィルター適用中: {getPeriodLabel()}
+              <Badge className="text-primary-foreground bg-primary px-3 py-2 text-sm font-medium">
+                {t('filterActive')}: {periodOptions.find(option => option.value === currentFilter.period)?.label}
                 {currentFilter.period === 'custom' && currentFilter.startDate && currentFilter.endDate && (
                   <span className="ml-1">
                     ({currentFilter.startDate} 〜 {currentFilter.endDate})
@@ -333,9 +344,9 @@ export function Header({
 
           <nav className="flex flex-col space-y-6">
             {[
-              { icon: RotateCcw, label: '更新', action: onRefresh, disabled: isLoading },
-              { icon: FileText, label: 'JSONエクスポート', action: onExportJSON, disabled: false },
-              { icon: FileDown, label: 'CSVエクスポート', action: onExportCSV, disabled: false },
+              { icon: RotateCcw, label: t('refresh'), action: onRefresh, disabled: isLoading },
+              { icon: FileText, label: t('exportJSON'), action: onExportJSON, disabled: false },
+              { icon: FileDown, label: t('exportCSV'), action: onExportCSV, disabled: false },
             ].map((item, index) => {
               const IconComponent = item.icon;
               return (
@@ -359,6 +370,23 @@ export function Header({
                 </button>
               );
             })}
+
+            {/* Language Switcher in Mobile Menu */}
+            <div
+              style={{
+                opacity: isMobileMenuOpen ? 1 : 0,
+                transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
+                transition: isMobileMenuOpen ? 'all 0.8s ease' : 'all 0.2s ease',
+                transitionDelay: isMobileMenuOpen ? '0.6s' : '0s',
+              }}
+            >
+              <LanguageSwitcher 
+                value={currentLanguage}
+                onValueChange={(lang) => handleLanguageChange(lang as Language)}
+                className="w-full justify-start"
+                variant="ghost"
+              />
+            </div>
           </nav>
         </div>
       </div>

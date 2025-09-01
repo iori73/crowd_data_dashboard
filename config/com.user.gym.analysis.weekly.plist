@@ -32,7 +32,7 @@
     <string>/Users/i_kawano/Documents/training_waitnum_analysis</string>
     
     <key>RunAtLoad</key>
-    <false/>
+    <true/>
     
     <key>KeepAlive</key>
     <false/>

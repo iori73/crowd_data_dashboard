@@ -1,42 +1,47 @@
 import { Card, CardContent } from '../ui/card';
 import { BarChart3, PieChart, Clock, Star } from 'lucide-react';
 import type { OverallStats } from '../../lib/dataProcessor';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { Language } from '../../lib/translations';
 
 interface StatisticsSummaryProps {
   stats: OverallStats;
+  language: Language;
 }
 
-export function StatisticsSummary({ stats }: StatisticsSummaryProps) {
+export function StatisticsSummary({ stats, language }: StatisticsSummaryProps) {
+  const { t } = useTranslation(language);
+  
   const statsData = [
     {
       icon: BarChart3,
-      label: '総データ数',
+      label: t('totalData'),
       value: stats.totalEntries.toLocaleString(),
-      description: '記録された観測数',
+      description: t('recordedObservations'),
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       icon: PieChart,
-      label: '平均混雑度',
+      label: t('averageCrowd'),
       value: stats.averageCrowdLevel.toFixed(1),
-      description: '全体の平均値',
+      description: t('overallAverage'),
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
     {
       icon: Clock,
-      label: 'ピーク時間',
+      label: t('peakTime'),
       value: `${stats.peakHour}:00`,
-      description: '最も混雑する時間帯',
+      description: t('mostCrowdedTime'),
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
     },
     {
       icon: Star,
-      label: '最適時間',
+      label: t('quietTime'),
       value: `${stats.quietHour}:00`,
-      description: '最も空いている時間帯',
+      description: t('leastCrowdedTime'),
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
@@ -57,9 +62,9 @@ export function StatisticsSummary({ stats }: StatisticsSummaryProps) {
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-start">
-                <p className="text-sm font-medium text-gray-700 mb-1 tracking-wide">{stat.label}</p>
-                <p className="text-xl font-bold text-gray-900 mb-1 tracking-tight">{stat.value}</p>
-                <p className="text-sm text-gray-600 leading-relaxed">{stat.description}</p>
+                <p className="text-base font-medium text-gray-700 mb-1 tracking-wide">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 mb-1 tracking-tight">{stat.value}</p>
+                <p className="text-base text-gray-600 leading-relaxed">{stat.description}</p>
               </div>
             </CardContent>
           </Card>
